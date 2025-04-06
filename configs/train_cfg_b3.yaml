@@ -1,0 +1,91 @@
+trainer_type: BaseTrainer
+random_seed: 777
+
+Data:
+  result_root_path: resources/data/results
+  path: resources/data/processed
+  dataset_type: BaseDataset
+  target_name: health
+  second_inp_prefix: spc_latin/
+
+Model:
+  device: cuda:0
+  name: BaseModelEmb
+  in_features: 28
+  complexity: 48
+  num_classes: 3
+  emb_dim: 16
+  emb_num: 132
+  path: None
+
+Parameters:
+  exp_name: baseline_3
+  batch_size: 512
+  num_epochs: 30
+  num_workers: 2
+
+  opt:
+    name: opt.Adam
+    params:
+      lr: 1.0e-1
+  scheduler:
+    name: sch.ReduceLROnPlateau
+    params:
+      mode: min
+      factor: 0.33
+      patience: 3
+
+
+  loss:
+    name: loss.bce_loss
+    params:
+      logits: True
+
+  metrics:
+    - params:
+        name: metric.roc_auc
+        reduction: average
+      title: roc_auc_avg
+
+    - params:
+        name: metric.roc_auc
+        reduction: none
+      title: roc_auc
+
+    - params:
+        name: metric.average_precision
+        reduction: average
+      title: average_precision_avg
+
+    - params:
+        name: metric.average_precision
+        reduction: none
+      title: average_precision
+
+    - params:
+        name: metric.recall
+        reduction: none
+        with_logits: True
+      title: recall
+
+    - params:
+        name: metric.precision
+        reduction: none
+        with_logits: True
+      title: precision
+
+    - params:
+        name: metric.f1
+        reduction: none
+        with_logits: True
+      title: f1
+
+    - params:
+        name: metric.f1
+        reduction: average
+        with_logits: True
+      title: f1_avg
+
+
+
+
